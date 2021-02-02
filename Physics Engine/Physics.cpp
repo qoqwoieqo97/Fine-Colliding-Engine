@@ -4,7 +4,7 @@
 Object::Object(float r, sf::Vector2f g,sf::Vector2f pos)
 	: shape(r),gravity(g)
 {
-	shape.setFillColor(sf::Color(0, 0, 0));
+	shape.setFillColor(sf::Color(0, 0, 255));
 	shape.setOutlineColor(sf::Color::White);
 	shape.setOutlineThickness(1);
 	shape.setPosition(pos);
@@ -49,18 +49,20 @@ void object_collider::collide_simulate()
 	{
 		for (i[1]=0; i[1] < c_object.size(); i[1]++)
 		{
-			if (i[0] == i[1]) break;
+			if (i[0] == i[1]) continue;
 			else
 			{
-				if (ColC::isColliding(ColC::Circle(c_object[i[0]]->shape.getRadius(), c_object[i[0]]->shape.getPosition()), ColC::Circle(c_object[i[1]]->shape.getRadius(), c_object[i[1]]->shape.getPosition())))
-				{
-					ColC::gdn_result dis = ColC::getDistanceN(
+				ColC::col_result r = 
+					ColC::fixed_isColliding(
 						ColC::Circle(c_object[i[0]]->shape.getRadius(), c_object[i[0]]->shape.getPosition()), 
 						ColC::Circle(c_object[i[1]]->shape.getRadius(), c_object[i[1]]->shape.getPosition())
 					);
-					float overlap = 0.5 * (dis.distance - c_object[i[0]]->shape.getRadius() - c_object[i[1]]->shape.getRadius());
-					c_object[i[1]]->shape.setPosition(c_object[i[1]]->shape.getPosition() + sf::Vector2f(dis.x, dis.y) * (overlap / 2));
-					c_object[i[0]]->shape.setPosition(c_object[i[0]]->shape.getPosition() - sf::Vector2f(dis.x, dis.y) * (overlap / 2));
+
+				if (r.isColliding)
+				{
+					float overlap = 0.5 * (r.distance.distance - c_object[i[0]]->shape.getRadius() - c_object[i[1]]->shape.getRadius());
+					c_object[i[1]]->shape.setPosition(c_object[i[1]]->shape.getPosition() + sf::Vector2f(r.distance.x, r.distance.y) * (overlap / 2));
+					c_object[i[0]]->shape.setPosition(c_object[i[0]]->shape.getPosition() - sf::Vector2f(r.distance.x, r.distance.y) * (overlap / 2));
 				}
 			}
 		}

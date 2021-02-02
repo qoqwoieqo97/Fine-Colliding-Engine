@@ -48,6 +48,11 @@ namespace ColC
 		float distance; int x, y;
 	};
 
+	struct col_result
+	{
+		gdn_result distance; bool isColliding;
+	};
+
 	template<typename T>
 	T i(T n)
 	{
@@ -79,5 +84,11 @@ namespace ColC
 	bool isColliding(Circle c1, Circle c2)
 	{
 		return getDistance(c1, c2)<=(c1.ch+c2.ch);
+	}
+
+	col_result fixed_isColliding(Circle c1, Circle c2)
+	{
+		gdn_result distance = getDistanceN(c1, c2);
+		return { distance, distance.distance <= c1.ch + c2.ch };
 	}
 }
